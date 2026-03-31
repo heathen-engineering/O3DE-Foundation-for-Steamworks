@@ -1,0 +1,18 @@
+{
+    "Amazon": {
+        "AssetProcessor": {
+            "Settings": {
+                "ScanFolder FoundationSteamworks/Assets": {
+                    "watch": "@GEMROOT:FoundationSteamworks@/Assets",
+                    "recursive": 1,
+                    "order": 101
+                },
+                "ScanFolder FoundationSteamworks/Registry": {
+                    "watch": "@GEMROOT:FoundationSteamworks@/Registry",
+                    "recursive": 1,
+                    "order": 102
+                }
+            }
+        }
+    }
+}

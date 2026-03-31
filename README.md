@@ -1,73 +1,197 @@
-# Foundation for Steamworks (O3DE Gem)
+# Foundation for Steamworks
 
-A thin, O3DE-centric wrapper over the Steamworks SDK that exposes Steam functionality to O3DE scripting and engine systems.
+An [Open 3D Engine (O3DE)](https://o3de.org) gem that wraps the [Valve Steamworks SDK](https://partner.steamgames.com/doc/home) and exposes it through O3DE's EBus system and Script Canvas / Lua behaviour context.
 
-This gem provides direct access to Steamworks interfaces through O3DE-native patterns, replacing Valve types with engine-aligned equivalents and exposing callbacks through O3DE event buses.
-
----
-
-## Core Concept
-
-The Foundation for Steamworks is not a gameplay framework. It is a binding layer.
-
-It:
-- Wraps the Steamworks SDK
-- Translates Steam types into O3DE-native equivalents
-- Exposes Steam interfaces via O3DE Event Buses
-- Normalises callback flow into engine-style events
+**License:** Apache 2.0
+**Origin:** Heathen Group
+**Platforms:** Windows, Linux
 
 ---
 
-## Design Approach
+## What it does
 
-This system is intentionally O3DE-centric rather than a direct SDK mirror.
+Foundation for Steamworks maps each Steamworks interface to a pair of O3DE buses:
 
-Key design rules:
-- No direct exposure of raw Steamworks types to gameplay code
-- All Steam callbacks are routed through O3DE Event Buses
-- Steam interfaces map to corresponding O3DE bus abstractions
-- Native Steam structures are mirrored with engine-safe equivalents
+| Bus | Direction | Purpose |
+|-----|-----------|---------|
+| `SteamXxxRequestBus` | Your code → Steam | Call Steam API methods |
+| `SteamXxxNotificationBus` | Steam → Your code | Receive callbacks and async results |
 
----
+The following Steamworks interfaces are covered:
 
-## Event Model
+- **Core** — `SteamAPI_InitEx`, `SteamGameServer_InitEx`, Steam Input lifecycle
+- **User** — auth tickets, session tokens, encrypted app tickets
+- **Apps** — ownership, DLC, language, VAC status
+- **Friends** — persona state, rich presence, overlay, chat, avatars
+- **Matchmaking** — lobbies (create, join, query, chat)
+- **User Stats** — stats (int/float), achievements, leaderboards
+- **Remote Storage** — cloud save file read/write/share/enumerate
+- **Inventory** — item definitions, grants, consume, exchange
+- **UGC / Workshop** — query, subscribe, upload, update items
+- **Utils** — overlay, battery, SteamUI language, IP country, text filter
+- **Screenshots** — trigger, write, add to library, tag users/files
+- **Remote Play** — session enumeration and invite
+- **Input** — device connect/disconnect, action data, config loading
+- **Timeline** — game mode bar, events (instantaneous and ranged), game phases, overlay
+- **Game Server** — server auth, VAC, server browser, logon/logoff
+- **Game Server Stats** — per-user server-side stats and achievements
 
-Each Steamworks interface has a corresponding O3DE Event Bus.
-
-- Steam callbacks are translated into bus events
-- Event delivery follows O3DE messaging patterns
-- Systems subscribe using standard engine bus mechanisms
-
-This replaces direct callback binding with engine-native event flow.
-
----
-
-## Type System
-
-All Valve Steamworks types are mapped into O3DE equivalents.
-
-- Steam structs → O3DE data structures
-- Steam enums → O3DE enum types
-- Steam identifiers → engine-safe wrappers where required
-
-This ensures Steam data can be used without dependency leakage into gameplay or tooling layers.
+> **Valve's Steamworks documentation is the canonical reference for all API behaviour.**
+> This gem exposes the SDK surface faithfully; consult https://partner.steamgames.com/doc/home for parameter semantics, rate limits, and usage guidelines.
 
 ---
 
-## Scope
+## Requirements
 
-This gem provides:
-- Direct Steamworks SDK integration
-- O3DE-style event exposure of Steam callbacks
-- Type translation layer between Steam and O3DE systems
-- Stable foundation for higher-level tooling
+- O3DE engine **25.10.2** or compatible
+- A registered [Steamworks developer account](https://partner.steamgames.com/) (required to download the SDK)
+- Steamworks SDK **1.63** (default; see [Changing the SDK version](#changing-the-sdk-version) below)
 
 ---
 
-## Intended Usage
+## Setup
 
-This gem is designed to be used as a base dependency for higher-level systems, including:
+### 1. Download the Steamworks SDK
 
-- Toolkit for Steamworks (proprietary layer, built on top)
-- Gameplay systems requiring Steam integration
-- Engine-level services interacting with Steam APIs
+Log in to the [Steamworks partner portal](https://partner.steamgames.com/) and download the SDK archive.
+
+### 2. Place the SDK
+
+Unpack the SDK so that the following path is valid relative to this gem:
+
+```
+Code/Source/ThirdParty/Steamworks/sdk/public/steam/steam_api.h
+```
+
+The full expected layout is:
+
+```
+FoundationSteamworks/
+  Code/
+    Source/
+      ThirdParty/
+        Steamworks/
+          sdk/
+            public/
+              steam/
+                steam_api.h
+                steam_gameserver.h
+                ...
+            redistributable_bin/
+              ...
+```
+
+The `sdk/` directory is excluded from source control (Valve's SDK licence prohibits redistribution). A placeholder file at `Code/Source/ThirdParty/Steamworks/SteamSDKGoesHere.md` marks the correct location.
+
+### 3. Add the gem to your O3DE project
+
+Register the gem with the O3DE Project Manager, or add it to your project's `project.json`:
+
+```json
+"gem_names": [
+    "FoundationSteamworks"
+]
+```
+
+Then re-register the engine path if needed:
+
+```bash
+# From your O3DE engine root
+scripts/o3de.sh register --gem-path /path/to/FoundationSteamworks
+scripts/o3de.sh enable-gem --gem-name FoundationSteamworks --project-path /path/to/YourProject
+```
+
+---
+
+## Building
+
+O3DE uses a two-step CMake + Ninja workflow.
+
+### Configure
+
+```bash
+cmake -B build/linux -S . -G "Ninja Multi-Config" \
+  -DLY_3RDPARTY_PATH=~/O3DE/3rdParty \
+  -DCMAKE_INSTALL_PREFIX=build/install/linux
+```
+
+### Build
+
+```bash
+cmake --build build/linux --config profile --target Gem.FoundationSteamworks
+```
+
+### Changing the SDK version
+
+The default is SDK **1.63**. To target a different version pass the version numbers at configure time:
+
+```bash
+cmake -B build/linux -S . -G "Ninja Multi-Config" \
+  -DLY_3RDPARTY_PATH=~/O3DE/3rdParty \
+  -DSTEAM_MAJOR=1 \
+  -DSTEAM_MINOR=63
+```
+
+If your SDK lives outside the `ThirdParty` folder, point CMake at it directly:
+
+```bash
+-DLY_STEAMWORKS_SDK_PATH=/absolute/path/to/steamworks_sdk
+```
+
+---
+
+## Editor initialisation
+
+When testing in the O3DE editor, Steam needs to know your App ID. Pass it to the init call so the gem can set the `SteamAppId` environment variable automatically — no `steam_appid.txt` file required:
+
+```lua
+-- Lua
+local result = Steam.Core.SteamInitialise(480)   -- 480 = Spacewar demo app
+if not result.success then
+    Debug.Log("Steam init failed: " .. result.errorMsg)
+end
+```
+
+In packaged builds Steam is launched through the client and already knows the App ID, so pass `0`.
+
+---
+
+## Usage overview
+
+All API calls go through the request buses; all callbacks arrive on the notification buses. The buses follow the naming convention `Steam<Interface>RequestBus` / `Steam<Interface>NotificationBus`.
+
+**C++ example — initialise and listen for overlay activation:**
+
+```cpp
+#include <FoundationSteamworks/FoundationSteamworksBus.h>
+#include <FoundationSteamworks/SteamUtilsNotificationBus.h>
+
+// Initialise (editor: pass your App ID; shipping: pass 0)
+AZStd::string error;
+bool ok = false;
+FoundationSteamworks::FoundationSteamworksRequestBus::BroadcastResult(
+    ok, &FoundationSteamworks::FoundationSteamworksRequests::Initialise, 0u, error);
+
+// Listen for overlay open/close
+class MyComponent : public Heathen::SteamUtilsNotificationBus::Handler
+{
+    void Activate() override { SteamUtilsNotificationBus::Handler::BusConnect(); }
+    void Deactivate() override { SteamUtilsNotificationBus::Handler::BusDisconnect(); }
+    void OnGameOverlayActivated(bool active) override { /* ... */ }
+};
+```
+
+**Script Canvas / Lua** — every request bus is exposed under the `Steam` category in the node palette. Notification buses can be connected as event nodes.
+
+---
+
+## Public headers
+
+All public headers live under `Code/Include/FoundationSteamworks/`. Steam SDK headers are never exposed publicly — all Steam types are converted to O3DE (`AZ::`) types at the implementation boundary.
+
+| Header | Contents |
+|--------|----------|
+| `FoundationSteamworksBus.h` | Core lifecycle bus (init, shutdown) |
+| `SteamTypes.h` | All O3DE-normalised enums, aliases, and result structs |
+| `Steam<Interface>RequestBus.h` | One per Steamworks interface |
+| `Steam<Interface>NotificationBus.h` | One per Steamworks interface |

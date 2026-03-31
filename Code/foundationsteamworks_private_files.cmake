@@ -1,0 +1,29 @@
+
+set(FILES
+    Source/FoundationSteamworksModuleInterface.cpp
+    Source/FoundationSteamworksModuleInterface.h
+    Source/Clients/FoundationSteamworksSystemComponent.cpp
+    Source/Clients/FoundationSteamworksSystemComponent.h
+    Source/Clients/SteamTypeConverters.h
+    Source/Clients/SteamCallResultInfrastructure.h
+    Source/Clients/SteamCallbackRegistry.h
+    Source/Clients/SteamCallbackRegistry.cpp
+    Source/Clients/BehaviorNotificationHandlers.h
+    Source/Clients/SteamAPIProxies.h
+    Source/Clients/SteamAPIReflect.cpp
+    Source/Clients/FoundationSteamworks_User.cpp
+    Source/Clients/FoundationSteamworks_Apps.cpp
+    Source/Clients/FoundationSteamworks_Friends.cpp
+    Source/Clients/FoundationSteamworks_Matchmaking.cpp
+    Source/Clients/FoundationSteamworks_Stats.cpp
+    Source/Clients/FoundationSteamworks_Storage.cpp
+    Source/Clients/FoundationSteamworks_Inventory.cpp
+    Source/Clients/FoundationSteamworks_UGC.cpp
+    Source/Clients/FoundationSteamworks_Utils.cpp
+    Source/Clients/FoundationSteamworks_Screenshots.cpp
+    Source/Clients/FoundationSteamworks_RemotePlay.cpp
+    Source/Clients/FoundationSteamworks_Input.cpp
+    Source/Clients/FoundationSteamworks_GameServer.cpp
+    Source/Clients/FoundationSteamworks_GameServerStats.cpp
+    Source/Clients/FoundationSteamworks_Timeline.cpp
+)
