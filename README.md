@@ -173,6 +173,7 @@ class MyComponent : public Heathen::SteamUtilsNotificationBus::Handler
 ```
 
 **Script Canvas / Lua** — every request bus is exposed under the `Steam` category in the node palette. Notification buses can be connected as event nodes.
+<img width="1845" height="424" alt="image" src="https://github.com/user-attachments/assets/2e16c241-014f-4b63-94d8-3b713953e434" />
 
 ---
 
