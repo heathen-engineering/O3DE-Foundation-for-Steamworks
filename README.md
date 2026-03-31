@@ -101,13 +101,7 @@ Register the gem with the O3DE Project Manager, or add it to your project's `pro
 ]
 ```
 
-Then re-register the engine path if needed:
-
-```bash
-# From your O3DE engine root
-scripts/o3de.sh register --gem-path /path/to/FoundationSteamworks
-scripts/o3de.sh enable-gem --gem-name FoundationSteamworks --project-path /path/to/YourProject
-```
+Then re-register the engine path if needed
 
 ---
 
