@@ -105,37 +105,28 @@ scripts/o3de.sh enable-gem --gem-name FoundationSteamworks --project-path /path/
 
 ## Building
 
-O3DE uses a two-step CMake + Ninja workflow.
-
-### Configure
-
-```bash
-cmake -B build/linux -S . -G "Ninja Multi-Config" \
-  -DLY_3RDPARTY_PATH=~/O3DE/3rdParty \
-  -DCMAKE_INSTALL_PREFIX=build/install/linux
-```
-
-### Build
-
-```bash
-cmake --build build/linux --config profile --target Gem.FoundationSteamworks
-```
+If you have added the gem to your project, you can build it via the O3DE Project Manager.
 
 ### Changing the SDK version
 
-The default is SDK **1.63**. To target a different version pass the version numbers at configure time:
+The default is SDK **1.63**. To target a different version make sure you update the FindSteamworks.cmake file:
 
 ```bash
-cmake -B build/linux -S . -G "Ninja Multi-Config" \
-  -DLY_3RDPARTY_PATH=~/O3DE/3rdParty \
-  -DSTEAM_MAJOR=1 \
-  -DSTEAM_MINOR=63
+set(STEAM_MAJOR 1 CACHE STRING "Steamworks SDK major version")
+set(STEAM_MINOR 63 CACHE STRING "Steamworks SDK minor version")
 ```
 
-If your SDK lives outside the `ThirdParty` folder, point CMake at it directly:
+If your SDK lives outside the `ThirdParty` folder, you can adjust where the make looks:
 
 ```bash
--DLY_STEAMWORKS_SDK_PATH=/absolute/path/to/steamworks_sdk
+if(LY_STEAMWORKS_SDK_PATH)
+    set(_steamworks_sdk_root "${LY_STEAMWORKS_SDK_PATH}")
+else()
+    # Default: sdk/ folder adjacent to this file
+    set(_steamworks_sdk_root "${CMAKE_CURRENT_LIST_DIR}/sdk")
+endif()
+
+set(STEAMWORKS_SDK_ROOT "${_steamworks_sdk_root}")
 ```
 
 ---
