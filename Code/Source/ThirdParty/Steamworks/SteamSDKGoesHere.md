@@ -17,19 +17,24 @@ You must be a registered Steamworks developer to access the SDK.
 
 By default the gem compiles against SDK **1.63** (STEAM_MAJOR=1, STEAM_MINOR=63).
 
-To target a different SDK version, pass the version to CMake at configure time:
+To target a different SDK version, update the version in the FindSteamworks.cmake file:
 
 ```bash
-cmake -B build/linux -S . -G "Ninja Multi-Config" \
-  -DLY_3RDPARTY_PATH=~/O3DE/3rdParty \
-  -DSTEAM_MAJOR=1 \
-  -DSTEAM_MINOR=63
+set(STEAM_MAJOR 1 CACHE STRING "Steamworks SDK major version")
+set(STEAM_MINOR 63 CACHE STRING "Steamworks SDK minor version")
 ```
 
 Or if your SDK is installed outside this folder, point CMake at it directly:
 
 ```bash
--DLY_STEAMWORKS_SDK_PATH=/path/to/steamworks_sdk
+if(LY_STEAMWORKS_SDK_PATH)
+    set(_steamworks_sdk_root "${LY_STEAMWORKS_SDK_PATH}")
+else()
+    # Default: sdk/ folder adjacent to this file
+    set(_steamworks_sdk_root "${CMAKE_CURRENT_LIST_DIR}/sdk")
+endif()
+
+set(STEAMWORKS_SDK_ROOT "${_steamworks_sdk_root}")
 ```
 
 ## The sdk/ folder is intentionally excluded from source control
