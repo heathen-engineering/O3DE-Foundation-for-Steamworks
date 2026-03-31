@@ -2,9 +2,17 @@
 
 An [Open 3D Engine (O3DE)](https://o3de.org) gem that wraps the [Valve Steamworks SDK](https://partner.steamgames.com/doc/home) and exposes it through O3DE's EBus system and Script Canvas / Lua behaviour context.
 
-**License:** Apache 2.0
-**Origin:** Heathen Group
-**Platforms:** Windows, Linux
+## Become a GitHub Sponsor
+[![Discord](https://img.shields.io/badge/Discord--1877F2?style=social&logo=discord)](https://discord.gg/6X3xrRc)
+[![GitHub followers](https://img.shields.io/github/followers/heathen-engineering?style=social)](https://github.com/heathen-engineering?tab=followers)  
+Support Heathen by becoming a [GitHub Sponsor](https://github.com/sponsors/heathen-engineering). Sponsorship directly funds the development and maintenance of free tools like this, as well as our game development [Knowledge Base](https://heathen.group/) and community on [Discord](https://discord.gg/6X3xrRc).
+
+Sponsors also get access to our private SourceRepo, which includes developer tools for O3DE, Unreal, Unity, and Godot.  
+Learn more or explore other ways to support @ [heathen.group/kb](https://heathen.group/kb/do-more/)
+
+- **License:** Apache 2.0
+- **Origin:** Heathen Group
+- **Platforms:** Windows, Linux
 
 ---
 
