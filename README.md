@@ -24,6 +24,19 @@ Support Heathen by becoming a [GitHub Sponsor](https://github.com/sponsors/heath
 Sponsors also get access to our private SourceRepo, which includes developer tools for O3DE, Unreal, Unity, and Godot.  
 Learn more or explore other ways to support @ [heathen.group/kb](https://heathen.group/kb/do-more/)
 
+### Toolkit for Steamworks
+The **Toolkit for Steamworks** is a sponsor-exclusive gem that builds on this foundation with high-level, component-driven features — bringing the same no-code-first experience as the Unity com.heathen.steamworks toolkit to O3DE:
+
+- **SteamToolsComponent** — singleton system component with ini-driven configuration; handles Steam initialisation, client/game-server mode selection, and lifecycle automatically — no level entity required
+- **Lobbies** — create, join, query, and chat in Steam lobbies through ready-made components and Script Canvas nodes
+- **User, Friends & Auth** — persona state, rich presence, overlay, and auth ticket management via high-level components
+- **Stats, Achievements & Leaderboards** — read/write stats, unlock achievements, and post leaderboard scores with event-driven SC nodes
+- **Steam Input** — action set and digital/analogue action reader components for controller-agnostic input
+- **Inventory & Workshop** — item definition management, grants/consume/exchange, and UGC upload/subscribe flows *(in development)*
+- **LyShine UI Components** — ready-made LyShine components for avatars, achievement icons, and common Steam UI patterns, plus async Script Canvas nodeables for texture pipeline work *(in development)*
+
+Available to [GitHub Sponsors](https://github.com/sponsors/heathen-engineering) via the private SourceRepo.
+
 ---
 
 ## What it does
