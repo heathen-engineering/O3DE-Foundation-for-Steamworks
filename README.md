@@ -12,6 +12,7 @@ An [Open 3D Engine (O3DE)](https://o3de.org) gem that wraps the [Valve Steamwork
 -----
 
 ## 🛠 Also Available For
+[![Godot](https://img.shields.io/badge/Godot-4.6%20%2B-478CBF?style=for-the-badge&logo=godotengine&logoColor=white)](https://github.com/heathen-engineering/Godot-Foundation-for-Steamworks)
 [![Unity](https://img.shields.io/badge/Unity-6%20%2B-black?style=for-the-badge&logo=unity&logoColor=white)](https://github.com/heathen-engineering/Unity-Foundation-for-Steamworks)
 
 -----
