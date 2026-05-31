@@ -9,6 +9,10 @@ An [Open 3D Engine (O3DE)](https://o3de.org) gem that wraps the [Valve Steamwork
 - **Origin:** Heathen Group
 - **Platforms:** Windows, Linux
 
+> [!TIP]
+> **Looking for the easiest way to install?**  
+> You can add this gem—along with all of Heathen's free O3DE tools—by using the centralized [O3DE-Gems](https://github.com/heathen-engineering/O3DE-Gems) repository. Step-by-step setup instructions are available directly in its README.
+
 -----
 
 ## 🛠 Also Available For
