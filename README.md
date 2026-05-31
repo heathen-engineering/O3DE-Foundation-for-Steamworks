@@ -9,9 +9,14 @@ An [Open 3D Engine (O3DE)](https://o3de.org) gem that wraps the [Valve Steamwork
 - **Origin:** Heathen Group
 - **Platforms:** Windows, Linux
 
+> [!TIP]
+> **Looking for the easiest way to install?**  
+> You can add this gem—along with all of Heathen's free O3DE tools—by using the centralized [O3DE-Gems](https://github.com/heathen-engineering/O3DE-Gems) repository. Step-by-step setup instructions are available directly in its README.
+
 -----
 
 ## 🛠 Also Available For
+[![Godot](https://img.shields.io/badge/Godot-4.6%20%2B-478CBF?style=for-the-badge&logo=godotengine&logoColor=white)](https://github.com/heathen-engineering/Godot-Foundation-for-Steamworks)
 [![Unity](https://img.shields.io/badge/Unity-6%20%2B-black?style=for-the-badge&logo=unity&logoColor=white)](https://github.com/heathen-engineering/Unity-Foundation-for-Steamworks)
 
 -----
@@ -120,7 +125,7 @@ Register the gem with the O3DE Project Manager, or add it to your project's `pro
 
 ```json
 "gem_names": [
-"FoundationSteamworks"
+    "FoundationSteamworks"
 ]
 ```
 
