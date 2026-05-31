@@ -14,6 +14,138 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// =============================================================================
+// REFACTOR PLAN — FoundationSteamworksSystemComponent.cpp (~5 000 lines → ~350)
+// =============================================================================
+// Goal: split the monolithic .cpp into focused translation units without ever
+// leaving the codebase in a non-compilable state.  Each session ends with a
+// passing build before committing.  Work top-down: infrastructure first so
+// later sessions have stable headers to include.
+//
+// INVARIANTS (apply to every session)
+// ────────────────────────────────────
+//  • Steam SDK headers (<steam/...>) NEVER appear in Code/Include/ public headers.
+//    They are permitted only in SteamCallbackRegistry.h/.cpp and the per-surface
+//    FoundationSteamworks_Xxx.cpp files.
+//  • The pimpl forward declarations in this header ("struct SteamCallbackRegistry;"
+//    / "struct CallResultRegistry;") stay here — only the definitions move.
+//  • After each session: cmake --build build/linux --config profile
+//                                --target Gem.FoundationSteamworks  must pass.
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// SESSION 1 — Infrastructure Layer                          [x] DONE
+// ─────────────────────────────────────────────────────────────────────────────
+// Move the private scaffolding that every other translation unit will depend on.
+//
+//  New PRIVATE headers  (Code/Source/Clients/):
+//    SteamTypeConverters.h            — ToSteamResult / ToSteamId / ToCallHandle
+//                                       helpers (currently ~lines 71–77 of .cpp)
+//    SteamCallResultInfrastructure.h  — ICallResultEntry, CallResultEntry<T>
+//                                       (header-only template), CallResultRegistry
+//                                       (currently ~lines 78–157 of .cpp)
+//    SteamCallbackRegistry.h          — SteamCallbackRegistry struct +
+//                                       STEAM_CALLBACK_MANUAL member declarations
+//                                       (currently ~lines 158–311 of .cpp)
+//                                       *** includes <steam/steam_api.h> — stays private ***
+//
+//  New PRIVATE implementation file  (Code/Source/Clients/):
+//    SteamCallbackRegistry.cpp        — all ~40 SteamCallbackRegistry::OnXxx
+//                                       method bodies (currently ~lines 312–717)
+//
+//  Edits to existing files:
+//    FoundationSteamworksSystemComponent.cpp — replace moved code with #includes
+//                                              of the three new private headers
+//    foundationsteamworks_private_files.cmake — add new .h + .cpp entries
+//
+//  Compile checkpoint: main .cpp ≈ 4 360 lines.
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// SESSION 2 — Behavior Handlers + Reflect Chains             [x] DONE
+// ─────────────────────────────────────────────────────────────────────────────
+// Isolate BehaviorContext plumbing and all BehaviorContext reflect chains.
+//
+//  New PRIVATE headers  (Code/Source/Clients/):
+//    BehaviorNotificationHandlers.h   — declarations of all 14
+//                                       BehaviorXxxNotificationHandler classes
+//
+//  New PRIVATE implementation files  (Code/Source/Clients/):
+//    BehaviorNotificationHandlers.cpp — all 14 BehaviorXxxNotificationHandler
+//                                       Reflect() bodies
+//    SteamAPIReflect.cpp              — all 15 SteamXxxAPI::Reflect()
+//                                       BehaviorContext chains
+//
+//  New PUBLIC headers  (Code/Include/FoundationSteamworks/) — one per proxy:
+//    SteamCoreAPI.h, SteamUserAPI.h, SteamAppsAPI.h, SteamFriendsAPI.h,
+//    SteamMatchmakingAPI.h, SteamStatsAPI.h, SteamStorageAPI.h,
+//    SteamInventoryAPI.h, SteamUGCAPI.h, SteamUtilsAPI.h,
+//    SteamScreenshotsAPI.h, SteamRemotePlayAPI.h, SteamInputAPI.h,
+//    SteamGameServerAPI.h, SteamGameServerStatsAPI.h
+//    (each: struct declaration + inline static EBus-forwarding methods +
+//     Reflect() declaration — NO Steam SDK types)
+//
+//  Edits to existing files:
+//    foundationsteamworks_api_files.cmake     — add 15 new public headers
+//    foundationsteamworks_private_files.cmake — add BehaviorNotificationHandlers.*
+//                                               and SteamAPIReflect.cpp
+//
+//  Compile checkpoint: main .cpp ≈ 3 760 lines.
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// SESSION 3 — Bus Implementations: Group A                   [x] DONE
+// ─────────────────────────────────────────────────────────────────────────────
+// User · Apps · Friends · Matchmaking  (~720 lines)
+// Each file: #includes SteamTypeConverters.h, SteamCallResultInfrastructure.h,
+//            <steam/steam_api.h>, and its own request/notification bus headers.
+//
+//  New PRIVATE implementation files  (Code/Source/Clients/):
+//    FoundationSteamworks_User.cpp        — SteamUserRequestBus implementations
+//    FoundationSteamworks_Apps.cpp        — SteamAppsRequestBus implementations
+//    FoundationSteamworks_Friends.cpp     — SteamFriendsRequestBus implementations
+//    FoundationSteamworks_Matchmaking.cpp — SteamMatchmakingRequestBus implementations
+//
+//  Edits: foundationsteamworks_private_files.cmake — add 4 new .cpp entries
+//
+//  Compile checkpoint: main .cpp ≈ 3 040 lines.
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// SESSION 4 — Bus Implementations: Group B                   [x] DONE
+// ─────────────────────────────────────────────────────────────────────────────
+// Stats · Storage · Inventory · UGC  (~1 150 lines)
+//
+//  New PRIVATE implementation files  (Code/Source/Clients/):
+//    FoundationSteamworks_Stats.cpp       — SteamUserStatsRequestBus implementations
+//    FoundationSteamworks_Storage.cpp     — SteamRemoteStorageRequestBus implementations
+//    FoundationSteamworks_Inventory.cpp   — SteamInventoryRequestBus implementations
+//    FoundationSteamworks_UGC.cpp         — SteamUGCRequestBus implementations
+//
+//  Edits: foundationsteamworks_private_files.cmake — add 4 new .cpp entries
+//
+//  Compile checkpoint: main .cpp ≈ 1 890 lines.
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// SESSION 5 — Bus Implementations: Group C + Final Trim      [x] DONE
+// ─────────────────────────────────────────────────────────────────────────────
+// Utils · Screenshots · RemotePlay · Input · GameServer(+Stats)  (~1 540 lines)
+//
+//  New PRIVATE implementation files  (Code/Source/Clients/):
+//    FoundationSteamworks_Utils.cpp         — SteamUtilsRequestBus implementations
+//    FoundationSteamworks_Screenshots.cpp   — SteamScreenshotsRequestBus implementations
+//    FoundationSteamworks_RemotePlay.cpp    — SteamRemotePlayRequestBus implementations
+//    FoundationSteamworks_Input.cpp         — SteamInputRequestBus implementations
+//    FoundationSteamworks_GameServer.cpp    — SteamGameServerRequestBus +
+//                                            SteamGameServerStatsRequestBus implementations
+//
+//  Edits: foundationsteamworks_private_files.cmake — add 5 new .cpp entries
+//
+//  Residual main .cpp (~350 lines):
+//    #includes of all new private headers, ctor/dtor, Init/Activate/Deactivate/
+//    OnTick, Reflect() (delegates to BehaviorNotificationHandlers + SteamXxxAPI
+//    sub-reflects), GetProvidedServices / GetIncompatibleServices etc.
+//
+//  Compile checkpoint: refactor complete, main .cpp at target size.
+// =============================================================================
+
 #pragma once
 
 #include <AzCore/Component/Component.h>
@@ -38,6 +170,8 @@
 #include <FoundationSteamworks/SteamGameServerRequestBus.h>
 #include <FoundationSteamworks/SteamGameServerStatsRequestBus.h>
 #include <FoundationSteamworks/SteamTimelineRequestBus.h>
+
+// Steam headers are included only in the .cpp — never in public headers.
 
 namespace FoundationSteamworks
 {
@@ -190,6 +324,7 @@ namespace FoundationSteamworks
         AZ::s32 GetLobbyMemberLimit(Heathen::SteamId lobbyId) override;
         bool InviteUserToLobby(Heathen::SteamId lobbyId, Heathen::SteamId inviteeId) override;
         void LeaveLobby(Heathen::SteamId lobbyId) override;
+        void SendLobbyChatMsg(Heathen::SteamId lobbyId, const AZStd::string& message) override;
         void AddRequestLobbyListStringFilter(const AZStd::string& key, const AZStd::string& value, Heathen::SteamLobbyComparison comparison) override;
         void AddRequestLobbyListNumericalFilter(const AZStd::string& key, AZ::s32 value, Heathen::SteamLobbyComparison comparison) override;
         void AddRequestLobbyListNearValueFilter(const AZStd::string& key, AZ::s32 valueToBeCloseTo) override;
@@ -391,6 +526,10 @@ namespace FoundationSteamworks
         void SetLEDColor(AZ::u64 inputHandle, AZ::u8 r, AZ::u8 g, AZ::u8 b, AZ::u32 flags) override;
         bool ShowBindingPanel(AZ::u64 inputHandle) override;
         AZ::s32 GetInputTypeForHandle(AZ::u64 inputHandle) override;
+        AZStd::vector<AZ::s32> GetDigitalActionOrigins(AZ::u64 inputHandle, AZ::u64 actionSetHandle, AZ::u64 digitalActionHandle) override;
+        AZStd::vector<AZ::s32> GetAnalogActionOrigins(AZ::u64 inputHandle, AZ::u64 actionSetHandle, AZ::u64 analogActionHandle) override;
+        AZStd::string GetGlyphPNGForActionOrigin(AZ::s32 origin, AZ::s32 size, AZ::u32 flags) override;
+        AZStd::string GetGlyphSVGForActionOrigin(AZ::s32 origin, AZ::u32 flags) override;
         AZ::u64 GetControllerForGamepadIndex(AZ::s32 index) override;
         AZ::s32 GetGamepadIndexForController(AZ::u64 inputHandle) override;
         AZ::u32 GetRemotePlaySessionID(AZ::u64 inputHandle) override;

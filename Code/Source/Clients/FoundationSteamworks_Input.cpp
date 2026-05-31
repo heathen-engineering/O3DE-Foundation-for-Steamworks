@@ -142,6 +142,59 @@ namespace FoundationSteamworks
         return name ? AZStd::string(name) : AZStd::string();
     }
 
+    AZStd::vector<AZ::s32> FoundationSteamworksSystemComponent::GetDigitalActionOrigins(
+        AZ::u64 inputHandle, AZ::u64 actionSetHandle, AZ::u64 digitalActionHandle)
+    {
+        AZStd::vector<AZ::s32> result;
+        if (!m_inputInitialised) return result;
+        EInputActionOrigin origins[STEAM_INPUT_MAX_ORIGINS];
+        int count = SteamInput()->GetDigitalActionOrigins(
+            static_cast<InputHandle_t>(inputHandle),
+            static_cast<InputActionSetHandle_t>(actionSetHandle),
+            static_cast<InputDigitalActionHandle_t>(digitalActionHandle),
+            origins);
+        result.reserve(static_cast<size_t>(count));
+        for (int i = 0; i < count; ++i)
+            result.push_back(static_cast<AZ::s32>(origins[i]));
+        return result;
+    }
+
+    AZStd::vector<AZ::s32> FoundationSteamworksSystemComponent::GetAnalogActionOrigins(
+        AZ::u64 inputHandle, AZ::u64 actionSetHandle, AZ::u64 analogActionHandle)
+    {
+        AZStd::vector<AZ::s32> result;
+        if (!m_inputInitialised) return result;
+        EInputActionOrigin origins[STEAM_INPUT_MAX_ORIGINS];
+        int count = SteamInput()->GetAnalogActionOrigins(
+            static_cast<InputHandle_t>(inputHandle),
+            static_cast<InputActionSetHandle_t>(actionSetHandle),
+            static_cast<InputAnalogActionHandle_t>(analogActionHandle),
+            origins);
+        result.reserve(static_cast<size_t>(count));
+        for (int i = 0; i < count; ++i)
+            result.push_back(static_cast<AZ::s32>(origins[i]));
+        return result;
+    }
+
+    AZStd::string FoundationSteamworksSystemComponent::GetGlyphPNGForActionOrigin(AZ::s32 origin, AZ::s32 size, AZ::u32 flags)
+    {
+        if (!m_inputInitialised) return {};
+        const char* path = SteamInput()->GetGlyphPNGForActionOrigin(
+            static_cast<EInputActionOrigin>(origin),
+            static_cast<ESteamInputGlyphSize>(size),
+            flags);
+        return path ? AZStd::string(path) : AZStd::string();
+    }
+
+    AZStd::string FoundationSteamworksSystemComponent::GetGlyphSVGForActionOrigin(AZ::s32 origin, AZ::u32 flags)
+    {
+        if (!m_inputInitialised) return {};
+        const char* path = SteamInput()->GetGlyphSVGForActionOrigin(
+            static_cast<EInputActionOrigin>(origin),
+            flags);
+        return path ? AZStd::string(path) : AZStd::string();
+    }
+
     void FoundationSteamworksSystemComponent::TriggerVibration(AZ::u64 inputHandle, AZ::u16 leftSpeed, AZ::u16 rightSpeed)
     {
         if (m_inputInitialised)

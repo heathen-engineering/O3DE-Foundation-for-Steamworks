@@ -1,6 +1,20 @@
 # Foundation for Steamworks
+![License](https://img.shields.io/badge/License-Apache_2.0-blue?style=flat-square)
+![Maintained](https://img.shields.io/badge/Maintained%3F-yes-green?style=flat-square)
+![O3DE](https://img.shields.io/badge/O3DE-25.10%20%2B-%2300AEEF?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAxTDEgNy40djkuMkwxMiAyM2wxMS02LjRWNy40TDEyIDF6bTkuMSAxNC45TDExLjUgMjEuM2wtOC42LTYuNFY4LjFsOC42LTYuNCA5LjEgNi40djYuOHpNMTEuNSA0LjZMMi45IDkuNnY0LjhsOC42IDUuMSA4LjYtNS4xVjkuNmwtOC42LTUuMHoiLz48L3N2Zz4=)
 
 An [Open 3D Engine (O3DE)](https://o3de.org) gem that wraps the [Valve Steamworks SDK](https://partner.steamgames.com/doc/home) and exposes it through O3DE's EBus system and Script Canvas / Lua behaviour context.
+
+- **License:** Apache 2.0
+- **Origin:** Heathen Group
+- **Platforms:** Windows, Linux
+
+-----
+
+## 🛠 Also Available For
+[![Unity](https://img.shields.io/badge/Unity-6%20%2B-black?style=for-the-badge&logo=unity&logoColor=white)](https://github.com/heathen-engineering/Unity-Foundation-for-Steamworks)
+
+-----
 
 ## Become a GitHub Sponsor
 [![Discord](https://img.shields.io/badge/Discord--1877F2?style=social&logo=discord)](https://discord.gg/6X3xrRc)
@@ -10,9 +24,18 @@ Support Heathen by becoming a [GitHub Sponsor](https://github.com/sponsors/heath
 Sponsors also get access to our private SourceRepo, which includes developer tools for O3DE, Unreal, Unity, and Godot.  
 Learn more or explore other ways to support @ [heathen.group/kb](https://heathen.group/kb/do-more/)
 
-- **License:** Apache 2.0
-- **Origin:** Heathen Group
-- **Platforms:** Windows, Linux
+### Toolkit for Steamworks
+The **Toolkit for Steamworks** is a sponsor-exclusive gem that builds on this foundation with high-level, component-driven features — bringing the same no-code-first experience as the Unity com.heathen.steamworks toolkit to O3DE:
+
+- **SteamToolsComponent** — singleton system component with ini-driven configuration; handles Steam initialisation, client/game-server mode selection, and lifecycle automatically — no level entity required
+- **Lobbies** — create, join, query, and chat in Steam lobbies through ready-made components and Script Canvas nodes
+- **User, Friends & Auth** — persona state, rich presence, overlay, and auth ticket management via high-level components
+- **Stats, Achievements & Leaderboards** — read/write stats, unlock achievements, and post leaderboard scores with event-driven SC nodes
+- **Steam Input** — action set and digital/analogue action reader components for controller-agnostic input
+- **Inventory & Workshop** — item definition management, grants/consume/exchange, and UGC upload/subscribe flows *(in development)*
+- **LyShine UI Components** — ready-made LyShine components for avatars, achievement icons, and common Steam UI patterns, plus async Script Canvas nodeables for texture pipeline work *(in development)*
+
+Available to [GitHub Sponsors](https://github.com/sponsors/heathen-engineering) via the private SourceRepo.
 
 ---
 
@@ -97,17 +120,11 @@ Register the gem with the O3DE Project Manager, or add it to your project's `pro
 
 ```json
 "gem_names": [
-    "FoundationSteamworks"
+"FoundationSteamworks"
 ]
 ```
 
-Then re-register the engine path if needed:
-
-```bash
-# From your O3DE engine root
-scripts/o3de.sh register --gem-path /path/to/FoundationSteamworks
-scripts/o3de.sh enable-gem --gem-name FoundationSteamworks --project-path /path/to/YourProject
-```
+Then re-register the engine path if needed
 
 ---
 

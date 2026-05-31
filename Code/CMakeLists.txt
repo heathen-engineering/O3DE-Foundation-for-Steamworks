@@ -177,6 +177,7 @@ if(PAL_TRAIT_BUILD_HOST_TOOLS)
         BUILD_DEPENDENCIES
             PUBLIC
                 AZ::AzToolsFramework
+                Gem::EditorExtensions.Editor.API
                 ${gem_name}.Private.Object
     )
 

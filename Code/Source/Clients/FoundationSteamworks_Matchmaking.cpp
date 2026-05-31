@@ -116,6 +116,12 @@ namespace FoundationSteamworks
             SteamMatchmaking()->LeaveLobby(FromSteamId(lobbyId));
     }
 
+    void FoundationSteamworksSystemComponent::SendLobbyChatMsg(SteamId lobbyId, const AZStd::string& message)
+    {
+        if (m_steamInitialised && SteamMatchmaking())
+            SteamMatchmaking()->SendLobbyChatMsg(FromSteamId(lobbyId), message.c_str(), static_cast<int>(message.size()));
+    }
+
     void FoundationSteamworksSystemComponent::AddRequestLobbyListStringFilter(const AZStd::string& key, const AZStd::string& value, SteamLobbyComparison comparison)
     {
         if (m_steamInitialised && SteamMatchmaking())

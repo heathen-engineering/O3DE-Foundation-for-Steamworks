@@ -82,6 +82,9 @@ namespace Heathen
         /// Leaves the given lobby.
         virtual void LeaveLobby(SteamId lobbyId) {}
 
+        /// Sends a chat message to all members of the given lobby.
+        virtual void SendLobbyChatMsg(SteamId lobbyId, const AZStd::string& message) {}
+
         // --- Lobby List Filters (call before RequestLobbyList) ---
 
         /// Filters lobby list results to lobbies with matching string metadata.

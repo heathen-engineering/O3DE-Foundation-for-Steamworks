@@ -1,11 +1,11 @@
 
 #include <AzCore/Serialization/SerializeContext.h>
+#include <AzCore/Interface/Interface.h>
 
-#include <AzToolsFramework/API/ViewPaneOptions.h>
-
-#include "FoundationSteamworksWidget.h"
 #include "FoundationSteamworksEditorSystemComponent.h"
+#include "SteamworksSettingsPage.h"
 
+#include <EditorExtensions/ISettingsPageRegistry.h>
 #include <FoundationSteamworks/FoundationSteamworksTypeIds.h>
 
 namespace FoundationSteamworks
@@ -41,6 +41,7 @@ namespace FoundationSteamworks
     void FoundationSteamworksEditorSystemComponent::GetRequiredServices([[maybe_unused]] AZ::ComponentDescriptor::DependencyArrayType& required)
     {
         BaseSystemComponent::GetRequiredServices(required);
+        required.push_back(AZ_CRC_CE("EditorExtensionsService"));
     }
 
     void FoundationSteamworksEditorSystemComponent::GetDependentServices([[maybe_unused]] AZ::ComponentDescriptor::DependencyArrayType& dependent)
@@ -52,6 +53,9 @@ namespace FoundationSteamworks
     {
         FoundationSteamworksSystemComponent::Activate();
         AzToolsFramework::EditorEvents::Bus::Handler::BusConnect();
+
+        if (auto* reg = AZ::Interface<EditorExtensions::ISettingsPageRegistry>::Get())
+            reg->RegisterPage(AZStd::make_unique<SteamworksSettingsPage>());
     }
 
     void FoundationSteamworksEditorSystemComponent::Deactivate()
@@ -62,13 +66,7 @@ namespace FoundationSteamworks
 
     void FoundationSteamworksEditorSystemComponent::NotifyRegisterViews()
     {
-        AzToolsFramework::ViewPaneOptions options;
-        options.paneRect = QRect(100, 100, 500, 400);
-        options.showOnToolsToolbar = true;
-        options.toolbarIcon = ":/FoundationSteamworks/toolbar_icon.svg";
-
-        // Register our custom widget as a dockable tool with the Editor under an Examples sub-menu
-        AzToolsFramework::RegisterViewPane<FoundationSteamworksWidget>("FoundationSteamworks", "Examples", options);
+        // FoundationSteamworks has no dedicated editor tool window.
     }
 
 } // namespace FoundationSteamworks

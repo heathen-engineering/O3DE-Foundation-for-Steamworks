@@ -57,6 +57,18 @@ namespace Heathen
         virtual void TriggerVibrationExtended(AZ::u64 inputHandle, AZ::u16 leftSpeed, AZ::u16 rightSpeed, AZ::u16 leftTriggerSpeed, AZ::u16 rightTriggerSpeed) {}
         virtual void SetLEDColor(AZ::u64 inputHandle, AZ::u8 r, AZ::u8 g, AZ::u8 b, AZ::u32 flags) {}
 
+        // --- Glyphs / origins ---
+        /// Returns the action origin(s) bound to a digital action for the given
+        /// controller and action set. Each entry is an EInputActionOrigin cast to s32.
+        virtual AZStd::vector<AZ::s32> GetDigitalActionOrigins(AZ::u64 inputHandle, AZ::u64 actionSetHandle, AZ::u64 digitalActionHandle) { return {}; }
+        /// Returns the action origin(s) bound to an analog action.
+        virtual AZStd::vector<AZ::s32> GetAnalogActionOrigins(AZ::u64 inputHandle, AZ::u64 actionSetHandle, AZ::u64 analogActionHandle) { return {}; }
+        /// Returns the filesystem path to a PNG glyph image for the given origin.
+        /// origin: EInputActionOrigin cast to s32. size: ESteamInputGlyphSize cast to s32.
+        virtual AZStd::string GetGlyphPNGForActionOrigin(AZ::s32 origin, AZ::s32 size, AZ::u32 flags) { return {}; }
+        /// Returns the filesystem path to an SVG glyph image for the given origin.
+        virtual AZStd::string GetGlyphSVGForActionOrigin(AZ::s32 origin, AZ::u32 flags) { return {}; }
+
         // --- Misc ---
         virtual bool ShowBindingPanel(AZ::u64 inputHandle) { return false; }
         virtual AZ::s32 GetInputTypeForHandle(AZ::u64 inputHandle) { return 0; }

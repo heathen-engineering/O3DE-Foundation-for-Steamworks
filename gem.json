@@ -1,18 +1,18 @@
 {
     "gem_name": "FoundationSteamworks",
-    "version": "1.0.0",
+    "version": "1.63.1",
     "display_name": "Foundation for Steamworks",
     "license": "Apache 2.0",
     "license_url": "https://opensource.org/licenses/Apache-2.0",
     "origin": "Heathen Group",
-    "origin_url": "https://github.com/heathen-engineering/O3DE-Foundation-for-Steamworks",
+    "origin_url": "https://heathen.group",
     "type": "Code",
-    "summary": "An Open 3D Engine (O3DE) gem that wraps the Valve Steamworks SDK and exposes it through O3DE's EBus system and Script Canvas / Lua behaviour context.",
+    "summary": "Foundation for Steamworks provides core Steamworks SDK integration for O3DE. It wraps the Steamworks API with O3DE-native EBus interfaces covering authentication, user data, stats and achievements, networking callbacks, and platform utilities — forming the base layer that Toolkit for Steamworks builds upon.",
     "canonical_tags": [
         "Gem"
     ],
     "user_tags": [
-        "Steamworks"
+        "FoundationSteamworks","Steam","Steamworks"
     ],
     "platforms": [
         "Windows","Linux"
@@ -21,8 +21,9 @@
     "requirements": "",
     "documentation_url": "https://heathen.group",
     "dependencies": [
+        "EditorExtensions"
     ],
-    "repo_uri": "https://github.com/heathen-engineering/O3DE-Foundation-for-Steamworks",
+    "repo_uri": "",
     "compatible_engines": [
     ],
     "engine_api_dependencies":[
